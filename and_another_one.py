@@ -12,23 +12,22 @@ def get_code(phone):
     params = {'phone': int(phone)}
     request_url = f"{url}/queue/sms"
     response = requests.get(request_url, headers=headers, params=params)
-    raw_answer = str(response.json())[0:147]
+    raw_answer = response.json()
+    for i in raw_answer['items']:
+        raw_code = i['text']
+        break
 
-    if 'Проверочный код восстановления пароля ЛК Безлимит' in raw_answer:
-        raw_answer = raw_answer[0:118]
-        answer = raw_answer.split("'text': '")[1]
+    if 'Проверочный код восстановления пароля ЛК Безлимит' in raw_code:
+        answer = raw_code
 
-    elif 'Проверочный код для регистрации в ЛК Безлимит' in raw_answer:
-        raw_answer = raw_answer[0:114]
-        answer = raw_answer.split("'text': '")[1]
+    elif 'Проверочный код для регистрации в ЛК Безлимит' in raw_code:
+        answer = raw_code
 
-    elif 'Код подтверждения перевода' in raw_answer:
-        raw_answer = raw_answer
-        answer = raw_answer.split("'text': '")[1]
+    elif 'Код подтверждения перевода' in raw_code:
+        answer = raw_code
 
-    elif 'Код подтверждения для добавления номера' in raw_answer:
-        raw_answer = raw_answer[0:121]
-        answer = raw_answer.split("'text': '")[1]
+    elif 'Код подтверждения для добавления номера' in raw_code:
+        answer = raw_code
 
     elif response.status_code == 500:
         answer = 'Возникла ошибка при попытке произвести запрос, попробуйте позже или обратитесь к разработчику.' \
@@ -44,14 +43,12 @@ def check_for_test_phone(number):
     phones_list = [9032417766, 9032526426, 9039944222, 9064442514, 9064442671, 9064603113, 9090691313, 9605554826,
                    9612229359, 9614828609, 9618885971, 9633243809, 9633244519, 9654513918, 9654514087, 9672999985,
                    9682220854, 9682221451, 9682223481, 9682224854, 9682224918, 9006471111, 9682227064, 9682228615,
-                   9684118881, 9612224895, 9064447536, 9612227834, 9944412525, 9681110905]
+                   9684118881, 9612224895, 9064447536, 9612227834, 9944412525, 9681110905, 9682225197]
 
     if number in phones_list:
         message = get_code(number)
     else:
-        message = 'Э!\n Номер должен относиться к списку тестовых номеров...\n' \
-                  'Не шалите так больше.' \
-                  'Или напишите Ивану Морозову.'
+        message = 'Номер должен относиться к списку тестовых номеров.'
 
     return message
 
