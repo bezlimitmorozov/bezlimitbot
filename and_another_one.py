@@ -1,17 +1,19 @@
 import telebot
 import requests
 
-bot = telebot.TeleBot("5309006030:AAGFubzYnyAfYD4p9cadG5Y37Mq1DpMVQMc", parse_mode=None)
+bot = telebot.TeleBot("5309006030:AAGFubzYnyAfYD4p9cadG5Y37Mq1DpMVQMc")
 
 
 def get_code(phone):
-    token = 'Z1RseVcn9twtKLY84eYQf57Pw8ENZ1yks436TJHXaC2dJhcRZLJ2mGsgRBpTuFp7'
+    token = 'IJMcp2KDTiGU05YpYwvd2zWqcfiVJzfsyazLPppAfr-iB5GWkTIoW0tFZZ3UP4Tq'
     url = "https://api.bezlimit.ru/v1"
     headers = {'accept': 'application/json',
-               'Api-Token': token}
+               'Api-Token': token,
+               'authorization': 'Basic YXBpOldHZnpzQWlKYkxa'}
     params = {'phone': int(phone)}
     request_url = f"{url}/queue/sms"
     response = requests.get(request_url, headers=headers, params=params)
+    print(response.content)
     raw_answer = response.json()
     for i in raw_answer['items']:
         raw_code = i['text']
@@ -38,6 +40,7 @@ def get_code(phone):
         answer = 'Кода подтверждения не поступало. По всем вопросам обращайтесь к @joanhoe1544.'
 
     return answer
+
 
 def check_for_test_phone(number):
     phones_list = [9032417766, 9032526426, 9039944222, 9064442514, 9064442671, 9064603113, 9090691313, 9605554826,
